@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Беларускi Буцик - Магазин мяса, колбас и сыров</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-container">
+                <div class="logo">
+                    <h1>Беларускi Буцик</h1>
+                    <p>Магазин мяса, колбас и сыров</p>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home">Главная</a></li>
+                    <li><a href="#products">Товары</a></li>
+                    <li><a href="#about">О нас</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-award"></i>
+                <span>Проверенное качество с 2015 года</span>
+            </div>
+            <h2>Свежие продукты высшего качества</h2>
+            <p>Традиционные белорусские мясные изделия, колбасы и сыры от проверенных производителей. Мы гарантируем свежесть и качество каждого продукта.</p>
+            <div class="rating">
+                <div class="stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <span class="rating-text">4.6 (106 оценок)</span>
+            </div>
+            <div class="hero-features">
+                <div class="feature-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Быстрая доставка</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Гарантия качества</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-leaf"></i>
+                    <span>Натуральные продукты</span>
+                </div>
+            </div>
+            <a href="#products" class="cta-button">Посмотреть товары</a>
+        </div>
+        <div class="hero-image">
+            <img src="imgs/общая фотка.webp" alt="Магазин Беларускi Буцик">
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2>Наши товары</h2>
+            <div class="products-grid">
+                <!-- Колбасы -->
+                <div class="product-category">
+                    <div class="category-header">
+                        <h3>Колбасы</h3>
+                        <i class="fas fa-hotdog"></i>
+                    </div>
+                    <div class="product-items">
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/колбаса.webp" alt="Колбаса">
+                            </div>
+                            <h4>Колбаса домашняя</h4>
+                            <p>Традиционная белорусская колбаса</p>
+                            <div class="product-price">от 320 ₽/кг</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/колбаса2.webp" alt="Колбаса премиум">
+                            </div>
+                            <h4>Колбаса премиум</h4>
+                            <p>Элитная колбаса высшего сорта</p>
+                            <div class="product-price">от 450 ₽/кг</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Лапша -->
+                <div class="product-category">
+                    <div class="category-header">
+                        <h3>Лапша</h3>
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="product-items">
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/сыр касичка.webp" alt="Лапша для супа">
+                            </div>
+                            <h4>Лапша для супа</h4>
+                            <p>Домашняя лапша для приготовления супов</p>
+                            <div class="product-price">от 120 ₽/кг</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Сладости -->
+                <div class="product-category">
+                    <div class="category-header">
+                        <h3>Сладости</h3>
+                        <i class="fas fa-candy-cane"></i>
+                    </div>
+                    <div class="product-items">
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/мармелад.webp" alt="Мармелад">
+                            </div>
+                            <h4>Мармелад ассорти</h4>
+                            <p>Натуральный фруктовый мармелад</p>
+                            <div class="product-price">от 180 ₽/кг</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/мармелад2.webp" alt="Мармелад премиум">
+                            </div>
+                            <h4>Мармелад премиум</h4>
+                            <p>Элитный мармелад с натуральными соками</p>
+                            <div class="product-price">от 220 ₽/кг</div>
+                        </div>
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/орехи.webp" alt="Орехи со сгущенкой">
+                            </div>
+                            <h4>Орехи со сгущенкой</h4>
+                            <p>Вкусные орехи в сгущенке - идеальный десерт</p>
+                            <div class="product-price">от 350 ₽/кг</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Овощи -->
+                <div class="product-category">
+                    <div class="category-header">
+                        <h3>Овощи</h3>
+                        <i class="fas fa-carrot"></i>
+                    </div>
+                    <div class="product-items">
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/картофель.webp" alt="Картофель">
+                            </div>
+                            <h4>Картофель</h4>
+                            <p>Свежий картофель от местных фермеров</p>
+                            <div class="product-price">от 45 ₽/кг</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Напитки -->
+                <div class="product-category">
+                    <div class="category-header">
+                        <h3>Напитки</h3>
+                        <i class="fas fa-wine-bottle"></i>
+                    </div>
+                    <div class="product-items">
+                        <div class="product-item">
+                            <div class="product-image">
+                                <img src="imgs/напитки.webp" alt="Напитки">
+                            </div>
+                            <h4>Напитки</h4>
+                            <p>Качественные напитки и соки</p>
+                            <div class="product-price">от 80 ₽/шт</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <div class="about-badge">
+                        <i class="fas fa-heart"></i>
+                        <span>С любовью к качеству</span>
+                    </div>
+                    <h2>О нашем магазине</h2>
+                    <p>Магазин "Беларускi Буцик" - это место, где традиции встречаются с качеством. Мы предлагаем широкий ассортимент свежих мясных изделий, колбас и сыров от проверенных белорусских и европейских производителей.</p>
+                    <p>Наша миссия - обеспечить наших клиентов только самыми качественными продуктами, которые станут основой для вкусных и полезных блюд на вашем столе. Каждый продукт проходит строгий контроль качества.</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">9+</div>
+                            <div class="stat-label">лет опыта</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">довольных клиентов</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">видов продукции</div>
+                        </div>
+                    </div>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Только свежие продукты</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Проверенные поставщики</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Доступные цены</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Профессиональные консультации</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="imgs/общая продукция.webp" alt="Продукция магазина">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Контакты</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Адрес</h4>
+                            <p>г. Мытищи, ул. 1-трудовой переулок, д. 4</p>
+                            <small>Рядом с остановкой "Трудовой переулок"</small>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Телефон</h4>
+                            <p>+7 903 113 52 44</p>
+                            <small>Звонки принимаются с 8:00 до 20:00</small>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Время работы</h4>
+                            <p>Пн-Пт: 8:00 - 20:00<br>Сб-Вс: 9:00 - 18:00</p>
+                            <small>Без перерывов и выходных</small>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>почта@mail.ru</p>
+                            <small>Ответим в течение 2 часов</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-placeholder">
+                    <iframe 
+                        src="https://yandex.ru/map-widget/v1/?ll=37.730555%2C55.909167&mode=search&ol=geo&ouri=ymapsbm1%3A%2F%2Fgeo%3Fdata%3DCgoxNTc3OTQ5MzEyEkPQoNC-0YHRgdC40Y8sINCc0L7RgdC60L7QstGB0LrQsNGPINC-0LHQu9Cw0YHRgtGMLCDQnNGL0YLQuNGJ0LgsIDEt0Lkg0KLRgNGD0LTQvtCy0L7QuSDQv9C10YDQtdGD0LvQvtC6LCA0IgoNMNRaQhXWlVdC&z=16" 
+                        width="100%" 
+                        height="300" 
+                        frameborder="0"
+                        style="border-radius: 10px;"
+                        title="Карта с расположением магазина Беларускi Буцик в Мытищах">
+                    </iframe>
+                    <div style="margin-top: 10px; text-align: center; color: #b0b0b0; font-size: 14px;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        г. Мытищи, ул. 1-трудовой переулок, д. 4
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Беларускi Буцик</h3>
+                    <p>Магазин мяса, колбас и сыров</p>
+                    <div class="rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span>4.6 (106 оценок)</span>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Быстрые ссылки</h4>
+                    <ul>
+                        <li><a href="#home">Главная</a></li>
+                        <li><a href="#products">Товары</a></li>
+                        <li><a href="#about">О нас</a></li>
+                        <li><a href="#contact">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Контакты</h4>
+                    <p><i class="fas fa-phone"></i> +7 903 113 52 44</p>
+                    <p><i class="fas fa-envelope"></i> почта@mail.ru</p>
+                    <p><i class="fas fa-map-marker-alt"></i> г. Мытищи, ул. 1-трудовой переулок, д. 4</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Беларускi Буцик. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal for product details -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Название товара</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <img id="modalImage" class="modal-image" src="" alt="">
+            <p class="modal-description" id="modalDescription">Описание товара</p>
+            <div class="modal-price" id="modalPrice">Цена</div>
+            <button class="modal-call-button" id="callButton">
+                <i class="fas fa-phone"></i> Позвонить
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i> Номер телефона скопирован
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
