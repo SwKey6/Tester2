@@ -76,7 +76,40 @@
     <section id="products" class="products">
         <div class="container">
             <h2>Наши товары</h2>
-            <div class="products-grid">
+            
+            <!-- Search and Filter Controls -->
+            <div class="products-controls">
+                <div class="search-container">
+                    <input type="text" id="productSearch" placeholder="Поиск по названию или цене..." class="search-input">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                
+                
+                <div class="filter-container">
+                    <select id="categoryFilter" class="category-select">
+                        <option value="">Все категории</option>
+                        <option value="колбасы">Колбасы</option>
+                        <option value="мясо">Мясо</option>
+                        <option value="сыры">Сыры</option>
+                        <option value="сладости">Сладости</option>
+                        <option value="овощи">Овощи</option>
+                        <option value="напитки">Напитки</option>
+                        <option value="лапша">Лапша</option>
+                    </select>
+                </div>
+                
+                <div class="sort-container">
+                    <select id="priceSort" class="sort-select">
+                        <option value="">Сортировка</option>
+                        <option value="price-asc">Цена: по возрастанию</option>
+                        <option value="price-desc">Цена: по убыванию</option>
+                        <option value="name-asc">Название: А-Я</option>
+                        <option value="name-desc">Название: Я-А</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="products-grid" id="productsGrid">
                 <!-- Колбасы -->
                 <div class="product-category">
                     <div class="category-header">
