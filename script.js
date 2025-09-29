@@ -253,27 +253,38 @@ const toast = document.getElementById('toast');
 // Phone number from contacts section
 const phoneNumber = '+7 903 113 52 44';
 
-// Product data - будет заполняться динамически
-const productData = {};
+// Удаляем старую систему productData — модалка берёт данные напрямую из карточки
 
-// Open modal when clicking on product
+// Open modal when clicking on product (берём данные из DOM карточки)
 document.addEventListener('click', (e) => {
     const productItem = e.target.closest('.product-item');
-    if (productItem) {
-        const productName = productItem.querySelector('h4').textContent;
-        const product = productData[productName];
-        
-        if (product) {
-            modalTitle.textContent = productName;
-            modalImage.src = product.image;
-            modalImage.alt = productName;
-            modalDescription.textContent = product.description;
-            modalPrice.textContent = product.price;
+    if (!productItem) return;
+
+    const productNameEl = productItem.querySelector('h4');
+    const productImgEl = productItem.querySelector('img');
+    const productCategory = productItem.getAttribute('data-category') || '';
+
+    // 18+ подтверждение для категории алкоголь
+    if (productCategory === 'алкоголь' && !window.__adultConfirmed) {
+        const ok = confirm('Раздел содержит алкогольную продукцию. Вам есть 18 лет?');
+        if (!ok) return;
+        window.__adultConfirmed = true;
+    }
+
+    const titleText = productNameEl ? productNameEl.textContent : '';
+    const imgSrc = productImgEl ? productImgEl.getAttribute('src') : '';
+    const imgAlt = productImgEl ? productImgEl.getAttribute('alt') || titleText : titleText;
+
+    modalTitle.textContent = titleText;
+    modalImage.src = imgSrc;
+    modalImage.alt = imgAlt;
+
+    // Временно скрываем описание и цену, пока не добавим новые
+    if (modalDescription) modalDescription.textContent = '';
+    if (modalPrice) modalPrice.textContent = '';
             
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
-        }
-    }
 });
 
 // Close modal
@@ -366,80 +377,224 @@ class ProductsManager {
         // Инициализируем пустой массив товаров
         this.products = [];
         this.filteredProducts = [];
-        
-        // Вручную добавляем все товары с исправленными названиями
-        this.loadManualProducts();
+        this.loadProductsFromImages();
     }
     
     // Функция для ручного добавления товаров с исправленными названиями
     loadManualProducts() {
-        const products = [
-            // КОЛБАСЫ
-            { name: 'Батончик шоколадный', category: 'сладости', price: 660, priceText: '330 ₽/0.5кг', image: 'imgs/батончикШоколадный330р0.5КГ.jpg', description: 'Шоколадный батончик' },
-            { name: 'Сервелат швейцарский Беларусь', category: 'колбасы', price: 780, priceText: '780 ₽/кг', image: 'imgs/БеларусьСервелатШвейцарский780рКГ.jpg', description: 'Сервелат швейцарский от Беларусь' },
-            { name: 'Любительская Блоним', category: 'колбасы', price: 670, priceText: '670 ₽/кг', image: 'imgs/БлонимЛюбительская670рКГ.jpg', description: 'Колбаса любительская Блоним' },
-            { name: 'Балык телятина Брест', category: 'колбасы', price: 1460, priceText: '146 ₽/100г', image: 'imgs/брестБалыкТелятина146р100г.jpg', description: 'Балык из телятины Брест' },
-            { name: 'Индейка Брест', category: 'мясо', price: 630, priceText: '630 ₽/кг', image: 'imgs/БрестИндейка630рКГ.jpg', description: 'Мясо индейки Брест' },
-            { name: 'Колбаса зернистая Брест', category: 'колбасы', price: 1200, priceText: '1200 ₽/кг', image: 'imgs/брестКолбасаЗернистая1200рКГ.jpg', description: 'Колбаса зернистая Брест' },
-            { name: 'Колбаса советская Брест', category: 'колбасы', price: 540, priceText: '540 ₽/кг', image: 'imgs/БрестКолбасаСоветсткая540рКГ.jpg', description: 'Колбаса советская Брест' },
-            { name: 'Любительская Брест', category: 'колбасы', price: 575, priceText: '575 ₽/кг', image: 'imgs/БрестЛюбительск575рКГ.jpg', description: 'Колбаса любительская Брест' },
-            { name: 'Сало домашнее Брест', category: 'мясо', price: 825, priceText: '825 ₽/кг', image: 'imgs/БрестСалоДомашнее825рКГ.jpg', description: 'Сало домашнее Брест' },
-            { name: 'Сало соленое в чесноке Брест', category: 'мясо', price: 795, priceText: '795 ₽/кг', image: 'imgs/БрестСалоСоленоеВческноке795рКГ.jpg', description: 'Сало соленое в чесноке Брест' },
-            { name: 'Сало сырокопченное Брест', category: 'мясо', price: 715, priceText: '715 ₽/кг', image: 'imgs/БрестСалоСыроКопченное715рКГ.jpg', description: 'Сало сырокопченное Брест' },
-            { name: 'Сосиски Брест', category: 'колбасы', price: 450, priceText: '450 ₽/кг', image: 'imgs/брестСосиски450рКГ.jpg', description: 'Сосиски Брест' },
-            { name: 'Холодец домашний Брест', category: 'мясо', price: 545, priceText: '545 ₽/кг', image: 'imgs/БРЕСТхолодецДомашний545рКГ.jpg', description: 'Холодец домашний Брест' },
-            { name: 'Буженина из деревни запеченная', category: 'мясо', price: 580, priceText: '580 ₽/кг', image: 'imgs/БуженинаИзДеревниЗапеченная580рКГ.jpg', description: 'Буженина из деревни запеченная' },
-            { name: 'Ветчина из окорока', category: 'мясо', price: 725, priceText: '725 ₽/кг', image: 'imgs/ВетчинаизОкоррока725рКГ.jpg', description: 'Ветчина из окорока' },
-            { name: 'Волшебная сливка', category: 'сладости', price: 940, priceText: '470 ₽/полкило', image: 'imgs/Волшебнаясливка470рПолкило.jpg', description: 'Волшебная сливка' },
-            { name: 'Ветчина ГОСТ', category: 'мясо', price: 680, priceText: '680 ₽/кг', image: 'imgs/ГОСТветчина680рКГ.jpg', description: 'Ветчина по ГОСТ' },
-            { name: 'Зельц домашний с грибами Гродно', category: 'мясо', price: 400, priceText: '400 ₽/кг', image: 'imgs/ГРодноЗельчДомашнийСГрибами400рКГ.jpg', description: 'Зельц домашний с грибами Гродно' },
-            { name: 'Колбаса вяленая домашняя Гродно', category: 'колбасы', price: 1530, priceText: '153 ₽/100г', image: 'imgs/гродноКолбасаВяленнаяДомашняя153р100г.jpg', description: 'Колбаса вяленая домашняя Гродно' },
-            { name: 'Колбаса домашняя рубленная', category: 'колбасы', price: 785, priceText: '785 ₽/кг', image: 'imgs/колбасаДомашняяРубленная785рКГ.jpg', description: 'Колбаса домашняя рубленная' },
-            { name: 'Колбаса московская', category: 'колбасы', price: 800, priceText: '800 ₽/кг', image: 'imgs/КолбасаМоскичка800рКГ.jpg', description: 'Колбаса московская' },
-            { name: 'Колбаса рижская Брест', category: 'колбасы', price: 575, priceText: '575 ₽/кг', image: 'imgs/КолбасаРигискаяБрест575рКГ.jpg', description: 'Колбаса рижская Брест' },
-            { name: 'Колбаса сырокопченая', category: 'колбасы', price: 544, priceText: '544 ₽/палка', image: 'imgs/колбасаСырокопченная544рПалка.jpg', description: 'Колбаса сырокопченая' },
-            { name: 'Колбаса сырокопченая премиум', category: 'колбасы', price: 765, priceText: '765 ₽/палка', image: 'imgs/колбасаСырокопченная765рПалка.jpg', description: 'Колбаса сырокопченая премиум' },
-            { name: 'Колбаска детская', category: 'колбасы', price: 745, priceText: '745 ₽/кг', image: 'imgs/КолбаскаДетская745рКГ.jpg', description: 'Колбаска детская' },
-            { name: 'Колбаска докторская', category: 'колбасы', price: 645, priceText: '645 ₽/кг', image: 'imgs/колбаскаДокторская645рКГ.jpg', description: 'Колбаска докторская' },
-            { name: 'Колбаски буженина вяленые', category: 'колбасы', price: 1600, priceText: '160 ₽/100г', image: 'imgs/колбаскиБожелеВяленные160р100г.jpg', description: 'Колбаски буженина вяленые' },
-            { name: 'Колбаса рубленная говядина', category: 'колбасы', price: 730, priceText: '730 ₽/кг', image: 'imgs/колбассаРубленнаяГовядина730рКГ.jpg', description: 'Колбаса рубленная говядина' },
-            { name: 'Конфеты Цветущий луг', category: 'сладости', price: 620, priceText: '310 ₽/полкило', image: 'imgs/конфеткиЦветущийЛуг310рПолкило.jpg', description: 'Конфеты Цветущий луг' },
-            { name: 'Конфеты Белорусская девочка', category: 'сладости', price: 770, priceText: '385 ₽/полкило', image: 'imgs/КонфетыБеларусскаяДевочка385рПолкило.jpg', description: 'Конфеты Белорусская девочка' },
-            { name: 'Конфеты Волшебные абрикос', category: 'сладости', price: 940, priceText: '470 ₽/полкило', image: 'imgs/КонфетыВолшебныеАбрикос470рПолкило.jpg', description: 'Конфеты Волшебные абрикос' },
-            { name: 'Конфеты Муренка молочные', category: 'сладости', price: 650, priceText: '325 ₽/полкило', image: 'imgs/конфетыМуренкаМолочные325рПолкило.jpg', description: 'Конфеты Муренка молочные' },
-            { name: 'Конфеты Трюфель вафельные', category: 'сладости', price: 1080, priceText: '540 ₽/полкило', image: 'imgs/конфетыТрюфельВафельные540рПолкило.jpg', description: 'Конфеты Трюфель вафельные' },
-            { name: 'Краковская Брест', category: 'колбасы', price: 745, priceText: '745 ₽/кг', image: 'imgs/краковскаяБрест745рКГ.jpg', description: 'Краковская Брест' },
-            { name: 'Грудинка соленая Могилев', category: 'мясо', price: 795, priceText: '795 ₽/кг', image: 'imgs/МогилевГрудинкаСоленая795рКГ.jpg', description: 'Грудинка соленая Могилев' },
-            { name: 'Московская', category: 'колбасы', price: 1339, priceText: '415 ₽/310г', image: 'imgs/Московская415р310г.jpg', description: 'Колбаса московская' },
-            { name: 'Мясо домашнее запеченное', category: 'мясо', price: 770, priceText: '770 ₽/кг', image: 'imgs/мяскоДомашнееЗапеченное770рКГ.jpg', description: 'Мясо домашнее запеченное' },
-            { name: 'Ребра мясные', category: 'мясо', price: 650, priceText: '650 ₽/кг', image: 'imgs/ребраМясные650рКГ.jpg', description: 'Ребра мясные' },
-            { name: 'Рулет из индейки', category: 'мясо', price: 680, priceText: '680 ₽/кг', image: 'imgs/РулетИзИндейки680рКГ.jpg', description: 'Рулет из индейки' },
-            { name: 'Сардельки свиные', category: 'колбасы', price: 625, priceText: '625 ₽/кг', image: 'imgs/СарделькиСвинные625рКГ.jpg', description: 'Сардельки свиные' },
-            { name: 'Сервелат белорусский', category: 'колбасы', price: 835, priceText: '835 ₽/кг', image: 'imgs/сервелатБеларусский835рКГ.jpg', description: 'Сервелат белорусский' },
-            { name: 'Сервелат кремлевский', category: 'колбасы', price: 740, priceText: '740 ₽/кг', image: 'imgs/СервелатКремлевский740рКГ.jpg', description: 'Сервелат кремлевский' },
-            { name: 'Сервелат телятина', category: 'колбасы', price: 685, priceText: '685 ₽/кг', image: 'imgs/СервелатТелятина685рКГ.jpg', description: 'Сервелат телятина' },
-            { name: 'Сосиски рубленные', category: 'колбасы', price: 795, priceText: '795 ₽/кг', image: 'imgs/сосикиРубленные795рКГ.jpg', description: 'Сосиски рубленные' },
-            { name: 'Сосиски Беларусь', category: 'колбасы', price: 590, priceText: '590 ₽/кг', image: 'imgs/сосискиБеларусь590рКГ.jpg', description: 'Сосиски Беларусь' },
-            { name: 'Сосиски молочные Окраина', category: 'колбасы', price: 445, priceText: '445 ₽/кг', image: 'imgs/сосискиМолочныеОкраина445рКГ.jpg', description: 'Сосиски молочные Окраина' },
-            { name: 'Сосиски нежные', category: 'колбасы', price: 560, priceText: '560 ₽/кг', image: 'imgs/сосискиНежные560рКГ.jpg', description: 'Сосиски нежные' },
-            { name: 'Сосиски Никольские нежные', category: 'колбасы', price: 590, priceText: '590 ₽/кг', image: 'imgs/сосискиНикольскиеНежные590рКГ.jpg', description: 'Сосиски Никольские нежные' },
-            { name: 'Утина рубленная жаренная', category: 'мясо', price: 770, priceText: '770 ₽/кг', image: 'imgs/утиннаяРУбленнаяЖаренная770рКГ.jpg', description: 'Утина рубленная жаренная' },
-            { name: 'Утка чипсы вяленые', category: 'мясо', price: 204, priceText: '204 ₽/пачка', image: 'imgs/уткаЧипсыВяленные204рПачка.jpg', description: 'Утка чипсы вяленые' },
-            { name: 'Ушки свиные', category: 'мясо', price: 560, priceText: '560 ₽/кг', image: 'imgs/ушкиСвинные560рКГ.jpg', description: 'Ушки свиные' },
-            { name: 'Шпикачки', category: 'колбасы', price: 630, priceText: '630 ₽/кг', image: 'imgs/шпикачки630рКГ.jpg', description: 'Шпикачки' },
-            { name: 'Язык телячий', category: 'мясо', price: 1257, priceText: '528 ₽/420г', image: 'imgs/ЯзыкТелячий528р420г.jpg', description: 'Язык телячий' }
+        // Отключено — старые связи с конкретными фото удалены
+        this.filteredProducts = [];
+    }
+
+    // Загрузка товаров из списка изображений (имя файла = название товара)
+    loadProductsFromImages() {
+        const imageFiles = [
+            'ABCпастаТоматная.jpg',
+            'ABCпюреЯблоко-Груша.jpg',
+            'ABCпюреЯблоко.jpg',
+            'ABCпюреЯблокоБанан.jpg',
+            'ABCсокЯблоко.jpg',
+            'ABCсоусАджика.jpg',
+            'ABCсоусИтальянский.jpg',
+            'ABCсоусСоевый.jpg',
+            'ABCсоусТАТАРСКИЙ.jpg',
+            'ABCСоусТоматный.jpg',
+            'ABCхлопьяОвсянныеВторойЗавтрак.jpg',
+            'BBQтоматныйсоусСпаприкой.jpg',
+            'KORONETLAGERпиво.jpg',
+            'АджикаАбхазия.jpg',
+            'АджикаОстраяСпаприкой.jpg',
+            'БазиликСущенный.jpg',
+            'Бела-Кола.jpg',
+            'борщсосвежейкапустой.jpg',
+            'БрикетыДляСупаРазные.jpg',
+            'БульбаЧипсыКартошечкапо-деревенски.jpg',
+            'бульбаЧипсыОстрые.jpg',
+            'Буратино.jpg',
+            'ВареньеАбрикосовое.jpg',
+            'ВареньеБрусничное.jpg',
+            'ВареньеВишневое.jpg',
+            'вареньеИзБрусники.jpg',
+            'вареньеИзЖимолости.jpg',
+            'вареньеКлубничное.jpg',
+            'вареньеКлюквенное.jpg',
+            'водаAQUA.jpg',
+            'водаAQUAклубникаИлимон.jpg',
+            'водаAQUAперсик.jpg',
+            'водаAQUAяблоко.jpg',
+            'водаDARIDA.jpg',
+            'водаDARIDAминиральная.jpg',
+            'водаMINSK WATER.jpg',
+            'ВодаСАроматомМалины.jpg',
+            'гвоздикаЦелая.jpg',
+            'ГовядинасПерловойКашей.jpg',
+            'ГовядинаТушеная.jpg',
+            'говядинаТушенаяВысшийСорт.jpg',
+            'ГовядинаТушенаяВысшийСорт2.jpg',
+            'говядинаТущеннаяМясанат.jpg',
+            'горошейЗеленый.jpg',
+            'ГорошекЗеленыйВысшийСорт.jpg',
+            'душистыйПерец.jpg',
+            'Карри.jpg',
+            'кашаГречневаяСговядиной.jpg',
+            'кашаПерловаяСговядиной.jpg',
+            'квасЛидский.jpg',
+            'КвасОригинальный.jpg',
+            'квасОчаковский.jpg',
+            'кетчупБарбекю.jpg',
+            'кетчупОстрый.jpg',
+            'кисельВишнеый.jpg',
+            'кисельРазный.jpg',
+            'КислотаЛимонная.jpg',
+            'клюкваСсахаром.jpg',
+            'компотАзаматАбрикос.jpg',
+            'компотАзаматАссорти.jpg',
+            'КомпотАзаматСлива.jpg',
+            'конинаВжеле.jpg',
+            'конфетыДостык.jpg',
+            'конфетыЁжик.jpg',
+            'конфетыКомунарка.jpg',
+            'конфетыКорал.jpg',
+            'конфетыФундучьяКарамель.jpg',
+            'конфетыШалун.jpg',
+            'КориандрЦелый.jpg',
+            'корнишоныМаринованные.jpg',
+            'КремСодаНапиток.jpg',
+            'кукурузаСахарная.jpg',
+            'кукурузаСладкая.jpg',
+            'ЛIДСКАЕpremiumпиво.jpg',
+            'ЛIДСКАЕаксамIтнаеЦёмнаеПиво.jpg',
+            'ЛапшаДлинная.jpg',
+            'ЛапшаДляСупа.jpg',
+            'ЛимонныйПерец.jpg',
+            'ЛиптонЛимонИЗеленый.jpg',
+            'лукашеннаяЗаправкаДляАЗУ.jpg',
+            'лукашенскиеМаринованныОвощи.jpg',
+            'лукашенскиеПомидорыЧерри.jpg',
+            'ЛукашинскаяЗаправкаДляГуляша.jpg',
+            'ЛукашинскиеШакшукаДляЯичныцы.jpg',
+            'ЛуковыеКольца.jpg',
+            'малинаСсахаром.jpg',
+            'медРазный.jpg',
+            'медЦветочный.jpg',
+            'медЦветочныйПотапыч.jpg',
+            'молокоСгущенноеСКакао.jpg',
+            'морсВишня.jpg',
+            'морсКлюквенный.jpg',
+            'морсЛесныеЯгоды.jpg',
+            'морсОблепиха.jpg',
+            'морсЧерно-Смородивновый.jpg',
+            'начос.jpg',
+            'НектарМорковно-Яблочный.jpg',
+            'нектарМорковный.jpg',
+            'нектарЯблочно-сливочный.jpg',
+            'овсянныеХлопья.jpg',
+            'пастаТоматнаяABC.jpg',
+            'пастораль.jpg',
+            'ПасторальВермишель.jpg',
+            'перецМолотый.jpg',
+            'ПерецЧерный.jpg',
+            'пивоБезАЛIдскаеНулевачка.jpg',
+            'пивоЛIДСКАЕpilsner.jpg',
+            'ПивоМайстра.jpg',
+            'пловСытный.jpg',
+            'повидлоЯблочное.jpg',
+            'походнаяГовядинаТушеная.jpg',
+            'ПриправаДляШашлыка.jpg',
+            'пюреABCразное.jpg',
+            'РагуОвощное.jpg',
+            'рисКруглозерный.jpg',
+            'РусскийСахар.jpg',
+            'СалатБордо.jpg',
+            'СалатИзкапустыСосвелой.jpg',
+            'СалатПровансальИзСвежейКапусты.jpg',
+            'СатсабелиСоус.jpg',
+            'свининасПерловойКашей.jpg',
+            'свининаТушеная.jpg',
+            'СвининаТушенаяПервыйСорт.jpg',
+            'СвининаТушенаяСмачная.jpg',
+            'сгущенноеВареноеМолокоЕгорка.jpg',
+            'СгущенноеМолоко.jpg',
+            'СгущенноеМолокоСсахаром.jpg',
+            'сенСоуСоусыОстрые.jpg',
+            'СливкиССахаромСгущенные.jpg',
+            'содаПищевая.jpg',
+            'сокABCяблоко-виноград.jpg',
+            'сокABCяблоко-вишня.jpg',
+            'сокABCяблоко-персик.jpg',
+            'СолянкаИзСвежейкапустыСгрибами.jpg',
+            'соусыРазные.jpg',
+            'сочниДляБесбармака.jpg',
+            'ТкхемалиСоус.jpg',
+            'ТоматыВТоматномСоке.jpg',
+            'томленаяГовядина.jpg',
+            'томленнаяСвинина.jpg',
+            'тушенаяГовядина.jpg',
+            'тушенаяГовядина2.jpg',
+            'укропСушенный.jpg',
+            'фантаОригинал.jpg',
+            'фирменнаяГовядинаТушеная.jpg',
+            'ЧерриМаринованные.jpg',
+            'ЧесночныйПерец.jpg',
+            'ЩИизСвежейКупусты.jpg',
+            'ягодныйКоктейль.jpg'
         ];
-        
-        // Добавляем товары в систему
-        products.forEach(product => {
+
+        const normalizeWhitespace = (s) => s.replace(/\s+/g, ' ').trim();
+        const splitByCaseAndSymbols = (s) => {
+            let name = s.replace(/\.[^.]+$/, '');
+            name = name.replace(/[._]+/g, ' ');
+            name = name.replace(/-/g, ' - ');
+            // Вставляем пробелы между латиницей/кириллицей и сменой регистра
+            name = name.replace(/([a-zа-яё])([A-ZА-ЯЁ])/g, '$1 $2');
+            name = name.replace(/([A-Z])([А-ЯЁа-яё])/g, '$1 $2');
+            name = name.replace(/([А-ЯЁа-яё])([A-Z])/g, '$1 $2');
+            name = name.replace(/(\d)([A-Za-zА-Яа-яЁё])/g, '$1 $2');
+            name = name.replace(/([A-Za-zА-Яа-яЁё])(\d)/g, '$1 $2');
+            return normalizeWhitespace(name);
+        };
+
+        const beautify = (raw) => {
+            let s = splitByCaseAndSymbols(raw).toLowerCase();
+            // Бренды и замены
+            const replacements = [
+                [/\babc\b/g, 'ABC'],
+                [/\bdarida\b/g, 'DARIDA'],
+                [/\baqua\b/g, 'AQUA'],
+                [/\bminsk\s*water\b/g, 'MINSK WATER'],
+                [/\bлидск[аеё]\b/gi, 'Лидское'],
+                [/\bлiдскае\b/gi, 'Лидское'],
+                [/\bпастораль\b/gi, 'Пастораль'],
+                [/\bлукаш(инск(ая|ие))\b/gi, 'Лукашинские'],
+                [/\bкомунарка\b/gi, 'Коммунарка'],
+                [/\bкрем\s*сода\b/gi, 'Крем-сода'],
+                [/\bфанта\b/gi, 'Fanta'],
+                [/\bлиптон\b/gi, 'Lipton'],
+            ];
+            replacements.forEach(([re, to]) => { s = s.replace(re, to); });
+
+            // Заглавные буквы слов, кроме служебных
+            s = s.split(' ').map(w => {
+                if (w === '-' || w.length === 0) return w;
+                if (/^[A-Z0-9-]+$/.test(w)) return w; // уже бренд/аббревиатура
+                const first = w.charAt(0).toUpperCase();
+                return first + w.slice(1);
+            }).join(' ');
+            return s;
+        };
+
+        imageFiles.forEach(f => {
+            const raw = f;
+            const prettyName = beautify(raw);
+            const category = this.detectCategory(prettyName);
             this.products.push({
                 id: Date.now() + Math.random(),
-                name: product.name,
-                category: product.category,
-                price: product.price,
-                priceText: product.priceText,
-                image: product.image,
-                description: product.description
+                name: prettyName,
+                category,
+                price: 0,
+                priceText: '',
+                image: `imgs/${f}`,
+                description: ''
             });
         });
         
@@ -451,7 +606,18 @@ class ProductsManager {
     
     bindEvents() {
         this.searchInput.addEventListener('input', debounce(() => this.filterProducts(), 300));
-        this.categoryFilter.addEventListener('change', () => this.filterProducts());
+        this.categoryFilter.addEventListener('change', () => {
+            const selected = this.categoryFilter.value;
+            if (selected === 'алкоголь' && !window.__adultConfirmed) {
+                const ok = confirm('Раздел содержит алкогольную продукцию. Вам есть 18 лет?');
+                if (!ok) {
+                    this.categoryFilter.value = '';
+                    return;
+                }
+                window.__adultConfirmed = true;
+            }
+            this.filterProducts();
+        });
         this.priceSort.addEventListener('change', () => this.sortProducts());
     }
     
@@ -533,11 +699,20 @@ class ProductsManager {
             'сладости': { name: 'Сладости', icon: 'fas fa-candy-cane' },
             'овощи': { name: 'Овощи', icon: 'fas fa-carrot' },
             'напитки': { name: 'Напитки', icon: 'fas fa-wine-bottle' },
-            'лапша': { name: 'Лапша', icon: 'fas fa-utensils' }
+            'лапша': { name: 'Лапша', icon: 'fas fa-utensils' },
+            'алкоголь': { name: 'Алкоголь', icon: 'fas fa-beer' },
+            'пюре': { name: 'Пюре', icon: 'fas fa-blender' },
+            'соусы': { name: 'Соусы', icon: 'fas fa-bottle-droplet' },
+            'специи': { name: 'Специи', icon: 'fas fa-seedling' },
+            'консервы': { name: 'Консервы', icon: 'fas fa-jar' },
+            'крупы': { name: 'Крупы', icon: 'fas fa-bowl-rice' },
+            'молочка': { name: 'Молочка', icon: 'fas fa-cheese' },
+            'сладкие напитки': { name: 'Сладкие напитки', icon: 'fas fa-bottle-water' },
+            'другое': { name: 'Другое', icon: 'fas fa-box' }
         };
         
         Object.keys(groupedProducts).forEach(categoryKey => {
-            const categoryInfo = categoryNames[categoryKey];
+            const categoryInfo = categoryNames[categoryKey] || { name: categoryKey[0]?.toUpperCase() + categoryKey.slice(1), icon: 'fas fa-box' };
             const products = groupedProducts[categoryKey];
             const currentPage = this.categoryPage[categoryKey] || 1;
             const endIndex = currentPage * this.productsPerPage;
@@ -552,13 +727,11 @@ class ProductsManager {
                     </div>
                     <div class="product-items">
                         ${visibleProducts.map(product => `
-                            <div class="product-item" data-product-id="${product.id}">
+                            <div class="product-item" data-product-id="${product.id}" data-category="${product.category}">
                                 <div class="product-image">
                                     <img loading="lazy" src="${product.image}" alt="${product.name}">
                                 </div>
                                 <h4>${product.name}</h4>
-                                <p>${product.description}</p>
-                                <div class="product-price">${product.priceText}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -581,8 +754,7 @@ class ProductsManager {
             });
         });
         
-        // Обновляем данные для модального окна
-        this.updateProductData();
+        // Данные для модального окна берём напрямую из DOM — ничего не обновляем
         
         // Перезапускаем анимации
         setTimeout(() => {
@@ -596,25 +768,18 @@ class ProductsManager {
         }, 100);
     }
     
-    updateProductData() {
-        // Обновляем объект productData для модального окна
-        this.products.forEach(product => {
-            productData[product.name] = {
-                image: product.image,
-                description: product.description,
-                price: product.priceText
-            };
-        });
-    }
+    // updateProductData отключена
     
     addProduct(product) {
         this.products.push(product);
         this.filterProducts();
+        updateProductsCount();
     }
     
     removeProduct(productId) {
         this.products = this.products.filter(p => p.id !== productId);
         this.filterProducts();
+        updateProductsCount();
     }
     
     // Функция для массового добавления товаров из фотографий
@@ -631,6 +796,7 @@ class ProductsManager {
             };
             this.addProduct(product);
         });
+        updateProductsCount();
     }
     
     // Функция для автоматического определения категории по названию
@@ -652,11 +818,32 @@ class ProductsManager {
         if (name.includes('овощ') || name.includes('картофель') || name.includes('морков') || name.includes('лук') || name.includes('капуст')) {
             return 'овощи';
         }
-        if (name.includes('напит') || name.includes('сок') || name.includes('вода') || name.includes('чай') || name.includes('кофе')) {
+        if (name.includes('напит') || name.includes('сок') || name.includes('вода') || name.includes('чай') || name.includes('кофе') || name.includes('квас') || name.includes('морс') || name.includes('лимонад')) {
             return 'напитки';
         }
         if (name.includes('лапш') || name.includes('макарон') || name.includes('паст')) {
             return 'лапша';
+        }
+        if (name.includes('пиво') || name.includes('beer') || name.includes('lager') || name.includes('алког') || name.includes('вин') || name.includes('водк') || name.includes('коньяк') || name.includes('шампан')) {
+            return 'алкоголь';
+        }
+        if (name.includes('пюре')) {
+            return 'пюре';
+        }
+        if (name.includes('соус') || name.includes('аджик') || name.includes('кетчуп') || name.includes('ткхемали') || name.includes('тхе') || name.includes('сатсабел')) {
+            return 'соусы';
+        }
+        if (name.includes('перец') || name.includes('укроп') || name.includes('карри') || name.includes('кориандр') || name.includes('базилик') || name.includes('гвоздик') || name.includes('специ') || name.includes('лимонн') && name.includes('кислот')) {
+            return 'специи';
+        }
+        if (name.includes('консерв') || name.includes('тушен') || name.includes('тушён') || name.includes('солянк') || name.includes('овощн') && name.includes('марин') || name.includes('черри') && name.includes('марин')) {
+            return 'консервы';
+        }
+        if (name.includes('рис') || name.includes('греч') || name.includes('овсянн') || name.includes('овсяные') || name.includes('круп') || name.includes('вермишель')) {
+            return 'крупы';
+        }
+        if (name.includes('молоко') || name.includes('сливк') || name.includes('сгущ')) {
+            return 'молочка';
         }
         
         return 'другое';
@@ -675,7 +862,17 @@ let productsManager;
 
 document.addEventListener('DOMContentLoaded', () => {
     productsManager = new ProductsManager();
+    updateProductsCount();
 });
+
+// Функция для обновления количества товаров в блоке "О нас"
+function updateProductsCount() {
+    const productsCountElement = document.getElementById('productsCount');
+    if (productsCountElement && productsManager) {
+        const totalProducts = productsManager.products.length;
+        productsCountElement.textContent = `${totalProducts}+`;
+    }
+}
 
 // Расширенная функция показа уведомлений
 function showToast(message, type = 'success') {
