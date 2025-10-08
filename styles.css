@@ -575,8 +575,8 @@ body {
 }
 
 .product-category:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), var(--shadow-glow);
+    transform: translateY(-3px) scale(1.005);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), var(--shadow-glow);
     border-color: rgba(74, 222, 128, 0.3);
 }
 

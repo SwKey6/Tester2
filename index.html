@@ -284,7 +284,15 @@
                     </div>
                 </div>
                 <div class="about-image">
-                    <img src="imgs/общая продукция.webp" alt="Продукция магазина">
+                    <div class="about-gallery">
+                        <img src="imgs4/DSC06991.jpg" alt="Фото магазина 1" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/DSC06995.jpg" alt="Фото магазина 2" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/z1.jpg" alt="Фото магазина 3" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/z2.jpg" alt="Фото магазина 4" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/z3.jpg" alt="Фото магазина 5" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/этто2.jpg" alt="Фото магазина 6" class="gallery-image" onclick="openGalleryModal(this.src)">
+                        <img src="imgs4/этто3.jpg" alt="Фото магазина 7" class="gallery-image" onclick="openGalleryModal(this.src)">
+                    </div>
                 </div>
             </div>
         </div>
@@ -408,6 +416,119 @@
         <i class="fas fa-check-circle"></i> Номер телефона скопирован
     </div>
 
-    <script src="script.js"></script>
+    <!-- Gallery Modal -->
+    <div id="galleryModal" class="modal" onclick="closeGalleryModal()">
+        <span class="gallery-modal-close" onclick="closeGalleryModal()">&times;</span>
+        <img class="gallery-modal-content" id="galleryModalImage" onclick="event.stopPropagation()">
+    </div>
+
+    <style>
+        /* Галерея в блоке "О нас" */
+        .about-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .about-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .about-gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Делаем первое изображение на всю высоту слева */
+        .about-gallery img:first-child {
+            grid-row: 1 / 4;
+        }
+        
+        /* Модальное окно галереи */
+        #galleryModal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.95);
+        }
+        
+        .gallery-modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            animation: zoom 0.3s;
+        }
+        
+        @keyframes zoom {
+            from {transform: scale(0.8); opacity: 0;}
+            to {transform: scale(1); opacity: 1;}
+        }
+        
+        .gallery-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #fff;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .gallery-modal-close:hover,
+        .gallery-modal-close:focus {
+            color: #bbb;
+        }
+        
+        @media (max-width: 768px) {
+            .about-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-gallery img:first-child {
+                grid-row: auto;
+            }
+        }
+    </style>
+
+    <script>
+        function openGalleryModal(src) {
+            const modal = document.getElementById('galleryModal');
+            const modalImg = document.getElementById('galleryModalImage');
+            modal.style.display = "block";
+            modalImg.src = src;
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('galleryModal').style.display = "none";
+        }
+
+        // Закрытие по нажатию Escape
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeGalleryModal();
+            }
+        });
+    </script>
+
+    <!-- Подключаем базу данных товаров -->
+    <script src="products-data.js"></script>
+    <!-- Подключаем основной скрипт -->
+    <script src="script-new.js"></script>
 </body>
 </html>
